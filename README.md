@@ -1,5 +1,5 @@
 # CRUDDIY
-forked from jan-vandenberg/cruddiy - converted from Bootstrap 3 to Bootstrap 4.
+Forked from [jan-vandenberg/cruddiy](https://github.com/jan-vandenberg/cruddiy) - converted from Bootstrap 3 to Bootstrap 4.
 
 Cruddiy is a free **no-code**  PHP Bootstrap CRUD generator.
 
