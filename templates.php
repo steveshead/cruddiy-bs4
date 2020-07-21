@@ -6,36 +6,29 @@ $indexfile = <<<'EOT'
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
     <style type="text/css">
-        .wrapper{
-            width: 950px;
-            margin: 0 auto;
-        }
         .page-header h2{
             margin-top: 0;
         }
         table tr td:last-child a{
             margin-right: 15px;
         }
+        body {
+        font-size: 14px;
+        }
     </style>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip();
-        });
-    </script>
 </head>
 <body>
-    <div class="wrapper">
+    <section class="py-5">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="page-header clearfix">
-                        <h2 class="pull-left">{TABLE_DISPLAY} Details</h2>
-                        <a href="{TABLE_NAME}-create.php" class="btn btn-success pull-right">Add New Record</a>
-                        <a href="index.php" class="btn btn-light pull-right">Back</a>
+                        <h2 class="float-left mb-3">{TABLE_DISPLAY} Details</h2>
+                        <a href="{TABLE_NAME}-create.php" class="btn btn-success float-right mb-3">Add New Record</a>
+                        <a href="index.php" class="btn btn-secondary float-right mb-3 mr-1">Back</a>
                     </div>
                     <?php
                     // Include config file
@@ -47,7 +40,7 @@ $indexfile = <<<'EOT'
                     } else {
                         $pageno = 1;
                     }
-                    $no_of_records_per_page = 25;
+                    $no_of_records_per_page = 10;
                     $offset = ($pageno-1) * $no_of_records_per_page;
 
                     $total_pages_sql = "SELECT COUNT(*) FROM {TABLE_NAME}";
@@ -87,24 +80,24 @@ $indexfile = <<<'EOT'
                                 while($row = mysqli_fetch_array($result)){
                                     echo "<tr>";
                                     {INDEX_TABLE_ROWS}
-                                        echo "<td>";
-                                            echo "<a href='{TABLE_NAME}-read.php?{COLUMN_ID}=". $row['{COLUMN_NAME}'] ."' title='View Record' data-toggle='tooltip'><span class='glyphicon glyphicon-eye-open'></span></a>";
-                                            echo "<a href='{TABLE_NAME}-update.php?{COLUMN_ID}=". $row['{COLUMN_NAME}'] ."' title='Update Record' data-toggle='tooltip'><span class='glyphicon glyphicon-pencil'></span></a>";
-                                            echo "<a href='{TABLE_NAME}-delete.php?{COLUMN_ID}=". $row['{COLUMN_NAME}'] ."' title='Delete Record' data-toggle='tooltip'><span class='glyphicon glyphicon-trash'></span></a>";
+                                        echo "<td class='text-center'>";
+                                            echo "<a class='mr-1' href='{TABLE_NAME}-read.php?{COLUMN_ID}=". $row['{COLUMN_NAME}'] ."' title='View Record' data-toggle='tooltip'><i class='far fa-eye fa-sm'></i></a>";
+                                            echo "<a class='mr-1' href='{TABLE_NAME}-update.php?{COLUMN_ID}=". $row['{COLUMN_NAME}'] ."' title='Update Record' data-toggle='tooltip'><i class='fas fa-pencil-alt fa-sm'></i></a>";
+                                            echo "<a href='{TABLE_NAME}-delete.php?{COLUMN_ID}=". $row['{COLUMN_NAME}'] ."' title='Delete Record' data-toggle='tooltip'><i class='far fa-trash-alt fa-sm'></i></a>";
                                         echo "</td>";
                                     echo "</tr>";
                                 }
                                 echo "</tbody>";
                             echo "</table>";
-                              ?> <ul class="pagination" align-right>
-                                    <li><a href="?pageno=1">First</a></li>
-                                    <li class="<?php if($pageno <= 1){ echo 'disabled'; } ?>">
-                                        <a href="<?php if($pageno <= 1){ echo '#'; } else { echo "?pageno=".($pageno - 1); } ?>">Prev</a>
+                              ?> <ul class="pagination ">
+                                    <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
+                                    <li class="page-item <?php if($pageno <= 1){ echo 'disabled'; } ?>">
+                                        <a class="page-link" href="<?php if($pageno <= 1){ echo '#'; } else { echo "?pageno=".($pageno - 1); } ?>">Prev</a>
                                     </li>
-                                    <li class="<?php if($pageno >= $total_pages){ echo 'disabled'; } ?>">
-                                        <a href="<?php if($pageno >= $total_pages){ echo '#'; } else { echo "?pageno=".($pageno + 1); } ?>">Next</a>
+                                    <li class="page-item <?php if($pageno >= $total_pages){ echo 'disabled'; } ?>">
+                                        <a class="page-link" href="<?php if($pageno >= $total_pages){ echo '#'; } else { echo "?pageno=".($pageno + 1); } ?>">Next</a>
                                     </li>
-                                    <li><a href="?pageno=<?php echo $total_pages; ?>">Last</a></li>
+                                    <li class="page-item"><a class="page-link" href="?pageno=<?php echo $total_pages; ?>">Last</a></li>
                                 </ul>
 <?php
                             // Free result set
@@ -122,7 +115,15 @@ $indexfile = <<<'EOT'
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script type="text/javascript">
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 </body>
 </html>
 EOT;
@@ -187,21 +188,16 @@ if(isset($_GET["{TABLE_ID}"]) && !empty(trim($_GET["{TABLE_ID}"]))){
 <head>
     <meta charset="UTF-8">
     <title>View Record</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <style type="text/css">
-        .wrapper{
-            width: 500px;
-            margin: 0 auto;
-        }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="wrapper">
+    <section class="py-5">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6 mx-auto">
                     <div class="page-header">
-                        <h1>View Record</h1>
+                        <h1 class="mb-4">View Record</h1>
                     </div>
                         
                      {RECORDS_READ_FORM}                    
@@ -210,7 +206,10 @@ if(isset($_GET["{TABLE_ID}"]) && !empty(trim($_GET["{TABLE_ID}"]))){
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>
 EOT;
@@ -262,36 +261,34 @@ if(isset($_POST["{TABLE_ID}"]) && !empty($_POST["{TABLE_ID}"])){
 <head>
     <meta charset="UTF-8">
     <title>View Record</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <style type="text/css">
-        .wrapper{
-            width: 500px;
-            margin: 0 auto;
-        }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="wrapper">
+    <section class="py-5">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-10 mx-auto">
                     <div class="page-header">
                         <h1>Delete Record</h1>
                     </div>
-                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                        <div class="alert alert-danger fade in">
-                            <input type="hidden" name="{TABLE_ID}" value="<?php echo trim($_GET["{TABLE_ID}"]); ?>"/>
+                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+                        <div class="alert alert-danger fade-in">
+                            <input type="hidden" name="{TABLE_ID}" value="<?php echo trim($_GET['{TABLE_ID}']); ?>"/>
                             <p>Are you sure you want to delete this record?</p><br>
                             <p>
                                 <input type="submit" value="Yes" class="btn btn-danger">
-                                <a href="{TABLE_NAME}-index.php" class="btn btn-default">No</a>
+                                <a href="{TABLE_NAME}-index.php" class="btn btn-secondary">No</a>
                             </p>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>
 
@@ -352,19 +349,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <head>
     <meta charset="UTF-8">
     <title>Create Record</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <style type="text/css">
-        .wrapper{
-            width: 500px;
-            margin: 0 auto;
-        }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="wrapper">
+    <section class="py-5">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6 mx-auto">
                     <div class="page-header">
                         <h2>Create Record</h2>
                     </div>
@@ -374,12 +366,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         {CREATE_HTML}
 
                         <input type="submit" class="btn btn-primary" value="Submit">
-                        <a href="{TABLE_NAME}-index.php" class="btn btn-default">Cancel</a>
+                        <a href="{TABLE_NAME}-index.php" class="btn btn-secondary">Cancel</a>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>
 EOT;
@@ -487,19 +482,14 @@ if(isset($_POST["{COLUMN_ID}"]) && !empty($_POST["{COLUMN_ID}"])){
 <head>
     <meta charset="UTF-8">
     <title>Update Record</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <style type="text/css">
-        .wrapper{
-            width: 500px;
-            margin: 0 auto;
-        }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="wrapper">
+    <section class="py-5">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6 mx-auto">
                     <div class="page-header">
                         <h2>Update Record</h2>
                     </div>
@@ -510,12 +500,15 @@ if(isset($_POST["{COLUMN_ID}"]) && !empty($_POST["{COLUMN_ID}"])){
 
                         <input type="hidden" name="{COLUMN_ID}" value="<?php echo ${COLUMN_ID}; ?>"/>
                         <input type="submit" class="btn btn-primary" value="Submit">
-                        <a href="{TABLE_NAME}-index.php" class="btn btn-default">Cancel</a>
+                        <a href="{TABLE_NAME}-index.php" class="btn btn-secondary">Cancel</a>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>
 
@@ -527,19 +520,14 @@ $errorfile = <<<'EOT'
 <head>
     <meta charset="UTF-8">
     <title>Error</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <style type="text/css">
-        .wrapper{
-            width: 750px;
-            margin: 0 auto;
-        }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="wrapper">
+    <section class="py-5">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-10 mx-auto">
                     <div class="page-header">
                         <h1>Invalid Request</h1>
                     </div>
@@ -549,25 +537,24 @@ $errorfile = <<<'EOT'
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>
 EOT;
 
 $startfile = <<<'EOT'
 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Select CRUD pages</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
     <style type="text/css">
-        .wrapper{
-            width: 650px;
-            margin: 0 auto;
-        }
         .page-header h2{
             margin-top: 0;
         }
@@ -576,14 +563,29 @@ $startfile = <<<'EOT'
         }
     </style>
 </head>
-<fieldset>
-<center>
-<legend>Available CRUD pages</legend>
-<div class="form-group">
-    {TABLE_BUTTONS}
-</div>
-</center>
-</fieldset>
+<body>
+    <section class="pt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mx-auto">
+                <fieldset>
+                    <div class="text-center mb-4">
+                        <legend>Available CRUD pages</legend>
+                    <div class="form-group">
+                        {TABLE_BUTTONS}
+                    </div>
+                    </div>
+                </fieldset>
+                </div>
+            </div>
+        </div>
+    </section>
+       
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>
 EOT;
 
 ?>
