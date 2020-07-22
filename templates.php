@@ -13,23 +13,33 @@ $indexfile = <<<'EOT'
             margin-top: 0;
         }
         table tr td:last-child a{
-            margin-right: 15px;
+            margin-right: 5px;
         }
         body {
-        font-size: 14px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <section class="py-5">
+    <section class="pt-5">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="page-header clearfix">
-                        <h2 class="float-left mb-3">{TABLE_DISPLAY} Details</h2>
-                        <a href="{TABLE_NAME}-create.php" class="btn btn-success float-right mb-3">Add New Record</a>
-                        <a href="index.php" class="btn btn-secondary float-right mb-3 mr-1">Back</a>
+                        <h2 class="float-left">{TABLE_DISPLAY} Details</h2>
+                        <a href="{TABLE_NAME}-create.php" class="btn btn-success float-right">Add New Record</a>
+                        <a href="index.php" class="btn btn-secondary float-right mr-2">Back</a>
                     </div>
+
+                    <div class="form-row">
+                        <form action="{TABLE_NAME}-index.php" method="get">
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="Search this table" name="search">
+                        </div>
+                    </div>
+                        </form>
+                    <br>
+
                     <?php
                     // Include config file
                     require_once "config.php";
@@ -40,7 +50,7 @@ $indexfile = <<<'EOT'
                     } else {
                         $pageno = 1;
                     }
-                    $no_of_records_per_page = 10;
+                    $no_of_records_per_page = 25;
                     $offset = ($pageno-1) * $no_of_records_per_page;
 
                     $total_pages_sql = "SELECT COUNT(*) FROM {TABLE_NAME}";
@@ -67,6 +77,19 @@ $indexfile = <<<'EOT'
                     }
                     // Attempt select query execution
                     $sql = "{INDEX_QUERY} ORDER BY $order $sort LIMIT $offset, $no_of_records_per_page";
+                    
+                    if(!empty($_GET['search'])) {
+                        $search = ($_GET['search']);
+                        $sql = "SELECT * FROM {TABLE_NAME}
+                            WHERE CONCAT ({INDEX_CONCAT_SEARCH_FIELDS})
+                            LIKE '%$search%'
+                            ORDER BY $order $sort 
+                            LIMIT $offset, $no_of_records_per_page";
+                    }
+                    else {
+                        $search = "";
+                    }
+
                     if($result = mysqli_query($link, $sql)){
                         if(mysqli_num_rows($result) > 0){
                             echo "<table class='table table-bordered table-striped'>";
@@ -80,16 +103,16 @@ $indexfile = <<<'EOT'
                                 while($row = mysqli_fetch_array($result)){
                                     echo "<tr>";
                                     {INDEX_TABLE_ROWS}
-                                        echo "<td class='text-center'>";
-                                            echo "<a class='mr-1' href='{TABLE_NAME}-read.php?{COLUMN_ID}=". $row['{COLUMN_NAME}'] ."' title='View Record' data-toggle='tooltip'><i class='far fa-eye fa-sm'></i></a>";
-                                            echo "<a class='mr-1' href='{TABLE_NAME}-update.php?{COLUMN_ID}=". $row['{COLUMN_NAME}'] ."' title='Update Record' data-toggle='tooltip'><i class='fas fa-pencil-alt fa-sm'></i></a>";
-                                            echo "<a href='{TABLE_NAME}-delete.php?{COLUMN_ID}=". $row['{COLUMN_NAME}'] ."' title='Delete Record' data-toggle='tooltip'><i class='far fa-trash-alt fa-sm'></i></a>";
+                                        echo "<td>";
+                                            echo "<a href='{TABLE_NAME}-read.php?{COLUMN_ID}=". $row['{COLUMN_NAME}'] ."' title='View Record' data-toggle='tooltip'><i class='far fa-eye'></i></a>";
+                                            echo "<a href='{TABLE_NAME}-update.php?{COLUMN_ID}=". $row['{COLUMN_NAME}'] ."' title='Update Record' data-toggle='tooltip'><i class='far fa-edit'></i></a>";
+                                            echo "<a href='{TABLE_NAME}-delete.php?{COLUMN_ID}=". $row['{COLUMN_NAME}'] ."' title='Delete Record' data-toggle='tooltip'><i class='far fa-trash-alt'></i></a>";
                                         echo "</td>";
                                     echo "</tr>";
                                 }
                                 echo "</tbody>";
                             echo "</table>";
-                              ?> <ul class="pagination ">
+                              ?> <ul class="pagination" align-right>
                                     <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
                                     <li class="page-item <?php if($pageno <= 1){ echo 'disabled'; } ?>">
                                         <a class="page-link" href="<?php if($pageno <= 1){ echo '#'; } else { echo "?pageno=".($pageno - 1); } ?>">Prev</a>
@@ -119,7 +142,7 @@ $indexfile = <<<'EOT'
 <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-<script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
         });
@@ -189,15 +212,14 @@ if(isset($_GET["{TABLE_ID}"]) && !empty(trim($_GET["{TABLE_ID}"]))){
     <meta charset="UTF-8">
     <title>View Record</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <section class="py-5">
+    <section class="pt-5">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-6 mx-auto">
+                <div class="col-md-12">
                     <div class="page-header">
-                        <h1 class="mb-4">View Record</h1>
+                        <h1>View Record</h1>
                     </div>
                         
                      {RECORDS_READ_FORM}                    
@@ -262,19 +284,18 @@ if(isset($_POST["{TABLE_ID}"]) && !empty($_POST["{TABLE_ID}"])){
     <meta charset="UTF-8">
     <title>View Record</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <section class="py-5">
+    <section class="pt-5">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-10 mx-auto">
+                <div class="col-md-12">
                     <div class="page-header">
                         <h1>Delete Record</h1>
                     </div>
                     <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
                         <div class="alert alert-danger fade-in">
-                            <input type="hidden" name="{TABLE_ID}" value="<?php echo trim($_GET['{TABLE_ID}']); ?>"/>
+                            <input type="hidden" name="{TABLE_ID}" value="<?php echo trim($_GET["{TABLE_ID}"]); ?>"/>
                             <p>Are you sure you want to delete this record?</p><br>
                             <p>
                                 <input type="submit" value="Yes" class="btn btn-danger">
@@ -350,10 +371,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <meta charset="UTF-8">
     <title>Create Record</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <section class="py-5">
+    <section class="pt-5">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6 mx-auto">
@@ -483,10 +503,9 @@ if(isset($_POST["{COLUMN_ID}"]) && !empty($_POST["{COLUMN_ID}"])){
     <meta charset="UTF-8">
     <title>Update Record</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <section class="py-5">
+    <section class="pt-5">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6 mx-auto">
@@ -506,9 +525,6 @@ if(isset($_POST["{COLUMN_ID}"]) && !empty($_POST["{COLUMN_ID}"])){
             </div>
         </div>
     </section>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>
 
@@ -521,17 +537,16 @@ $errorfile = <<<'EOT'
     <meta charset="UTF-8">
     <title>Error</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <section class="py-5">
+    <section class="pt-5">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-10 mx-auto">
+                <div class="col-md-12">
                     <div class="page-header">
                         <h1>Invalid Request</h1>
                     </div>
-                    <div class="alert alert-danger fade in">
+                    <div class="alert alert-danger fade-in">
                         <p>Sorry, you've made an invalid request. Please <a href="index.php" class="alert-link">go back</a> and try again.</p>
                     </div>
                 </div>
@@ -547,40 +562,29 @@ EOT;
 
 $startfile = <<<'EOT'
 
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Select CRUD pages</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/6b773fe9e4.js" crossorigin="anonymous"></script>
     <style type="text/css">
         .page-header h2{
             margin-top: 0;
         }
         table tr td:last-child a{
-            margin-right: 15px;
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
-    <section class="pt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 mx-auto">
-                <fieldset>
-                    <div class="text-center mb-4">
-                        <legend>Available CRUD pages</legend>
-                    <div class="form-group">
-                        {TABLE_BUTTONS}
-                    </div>
-                    </div>
-                </fieldset>
-                </div>
-            </div>
-        </div>
-    </section>
-       
+<fieldset>
+<center>
+<legend>Available CRUD pages</legend>
+<div class="form-group">
+    {TABLE_BUTTONS}
+</div>
+</center>
+</fieldset>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>

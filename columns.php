@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-md-10 mx-auto">
                 <div class="text-center pt-5">
-                    <h4>All available columns</h4>
+                    <h4 class="mb-0">All available columns</h4>
                 </div>
                 <form class="form-horizontal" action="generate.php" method="post">
                     <fieldset>
@@ -61,7 +61,7 @@
                                 if (isset($table['tablecheckbox']) && $table['tablecheckbox'] == 1) {
                                     $tablename = $table['tablename'];
                                     $tabledisplay = $table['tabledisplay'];
-                                    echo "<div class='text-center mb-4'><b>Table: " . $tabledisplay . " (". $tablename .")</b></div>";
+                                    echo "<div class='text-center my-4'><b>Table: " . $tabledisplay . " (". $tablename .")</b></div>";
                                     $sql = "SHOW columns FROM $tablename";
                                     $primary_keys = get_primary_keys($tablename);
                                     $auto_keys = get_autoincrement_cols($tablename);
