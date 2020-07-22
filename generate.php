@@ -14,13 +14,14 @@ $columndisplay = '';
 $columnvisible = '';
 $index_table_rows = '';
 $index_table_headers = '';
+$start_page = '';
 
 function column_type($columnname){
     //When the colum has type mediumtext / longtext / text show a textarea in input/update
     if(preg_match("/text/i", $columnname)) {
         return 1;
-    }   
-   //All other types are input fields 
+    }
+   //All other types are input fields
     else {
         return 0;
     }
@@ -40,7 +41,7 @@ function generate_start($start_page){
     $destination_file = fopen("app/index.php", "w") or die("Unable to open file!");
     fwrite($destination_file, $step0);
     fclose($destination_file);
-    echo "Generating Startpage file<br>";    
+    echo "Generating Startpage file<br>";
 }
 
 function generate_index($tablename,$tabledisplay,$index_table_headers,$index_table_rows,$column_id, $columns_available) {
@@ -81,7 +82,7 @@ function generate_delete($tablename, $column_id){
   echo "Generating $tablename Delete file(s)<br><br>";
 }
 
-function generate_create($tablename,$create_records, $create_err_records, $create_sqlcolumns, $create_numberofparams, $create_sql_params, $create_html, $create_postvars) { 
+function generate_create($tablename,$create_records, $create_err_records, $create_sqlcolumns, $create_numberofparams, $create_sql_params, $create_html, $create_postvars) {
   global $createfile;
   $step0 = str_replace("{TABLE_NAME}", $tablename, $createfile);
   $step1 = str_replace("{CREATE_RECORDS}", $create_records, $step0);
@@ -116,7 +117,7 @@ function generate_update($tablename, $create_records, $create_err_records, $crea
 }
 
 function count_index_colums($table) {
-    $i = 0; 
+    $i = 0;
     foreach ( $_POST as $key => $value) {
         if ($key == 'singlebutton') {
             //echo "nope";
@@ -135,7 +136,7 @@ function count_index_colums($table) {
     }
        return $i;
 }
-// Go trough the POST array
+// Go through the POST array
 // Every table is a key
 foreach ($_POST as $key => $value) {
     $tables = array();
@@ -165,13 +166,13 @@ foreach ($_POST as $key => $value) {
 
    if ($key != 'singlebutton') {
         $i = 0;
-        $j = 0; 
+        $j = 0;
         $max = count_index_colums($key)+1;
         $total_columns = count($_POST[$key]);
         $total_params = count($_POST[$key]);
-        
+
     //Specific INDEX page variables
-    foreach ( $_POST[$key] as $columns ) { 
+    foreach ( $_POST[$key] as $columns ) {
         if (isset($columns['primary'])){
            $column_id =  $columns['columnname'];
         }
@@ -185,19 +186,19 @@ foreach ($_POST as $key => $value) {
             $columnname = $columns['columnname'];
 
             if (!empty($columns['columndisplay'])){
-                $columndisplay = $columns['columndisplay'];   
+                $columndisplay = $columns['columndisplay'];
             } else {
-                $columndisplay = $columns['columnname'];   
+                $columndisplay = $columns['columnname'];
             }
 
-            $columns_available [] = $columnname; 
+            $columns_available [] = $columnname;
             $index_table_headers .= 'echo "<th><a href=?order='.$columnname.'&sort=$sort>'.$columndisplay.'</th>";'."\n\t\t\t\t\t\t\t\t\t\t";
             $index_table_rows .= 'echo "<td>" . $row['. "'" . $columnname . "'" . '] . "</td>";';
             $i++;
-            }   
+            }
         }
     }
-        
+
     //DETAIL CREATE UPDATE AND DELETE pages variables
     foreach ( $_POST[$key] as $columns ) {
         //print_r($columns);
@@ -240,8 +241,8 @@ foreach ($_POST as $key => $value) {
         $create_record = "\$$columnname";
         $create_err_records .= "\$$columnname".'_err'." = \"\";\n";
         $create_err_record = "\$$columnname".'_err';
-        $create_sqlcolumns [] = $columnname;   
-        $create_sql_params [] = "\$$columnname"; 
+        $create_sqlcolumns [] = $columnname;
+        $create_sql_params [] = "\$$columnname";
         $create_postvars .= "$$columnname = trim(\$_POST[\"$columnname\"]);\n\t\t";
 
         $update_sql_params [] = "$columnname".'=?';
@@ -265,7 +266,7 @@ foreach ($_POST as $key => $value) {
         }
 }
         if ($j == $total_columns) {
-                
+
                 $update_sql_columns = $create_sql_params;
                 $update_sql_columns [] = "\$$column_id";
                 $update_sql_columns = implode(",", $update_sql_columns);
@@ -279,11 +280,11 @@ foreach ($_POST as $key => $value) {
                 $update_sql_params = implode(",", $update_sql_params);
 
                 //Generate everything
-                $start_page = "";
+                $start_page .= "";
 
                 foreach($tables as $key => $value) {
                     //echo "$key is at $value";
-                    $start_page .= '<a href="'. $key . '-index.php" class="btn btn-primary" role="button">'. $value. '</a> ';
+                    $start_page .= '<a href="'. $key . '-index.php" class="btn btn-primary" role="button">'. $value. '</a> ' ;
                 }
 
                 generate_start($start_page);
