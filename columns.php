@@ -7,11 +7,11 @@
 
 </head>
 <body>
-<section class="pt-5">
+<section class="py-5">
     <div class="container">
         <div class="row">
             <div class="col-md-10 mx-auto">
-                <div class="text-center pt-5">
+                <div class="text-center">
                     <h4 class="mb-0">All available columns</h4>
                 </div>
                 <form class="form-horizontal" action="generate.php" method="post">
@@ -129,5 +129,3 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>
-
-

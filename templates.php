@@ -58,9 +58,9 @@ $indexfile = <<<'EOT'
                     $result = mysqli_query($link,$total_pages_sql);
                     $total_rows = mysqli_fetch_array($result)[0];
                     $total_pages = ceil($total_rows / $no_of_records_per_page);
-                    
+
                     //Column sorting on column name
-                    $orderBy = array('{COLUMNS}'); 
+                    $orderBy = array('{COLUMNS}');
                     $order = '{COLUMN_ID}';
                     if (isset($_GET['order']) && in_array($_GET['order'], $orderBy)) {
                             $order = $_GET['order'];
@@ -68,23 +68,23 @@ $indexfile = <<<'EOT'
 
                     //Column sort order
                     $sortBy = array('asc', 'desc'); $sort = 'desc';
-                    if (isset($_GET['sort']) && in_array($_GET['sort'], $sortBy)) {                                                                    
-                          if($_GET['sort']=='asc') {                                                                                                                            
+                    if (isset($_GET['sort']) && in_array($_GET['sort'], $sortBy)) {
+                          if($_GET['sort']=='asc') {
                             $sort='desc';
-                            }                                                                                   
+                            }
                     else {
                         $sort='asc';
-                        }                                                                                                                           
+                        }
                     }
                     // Attempt select query execution
                     $sql = "{INDEX_QUERY} ORDER BY $order $sort LIMIT $offset, $no_of_records_per_page";
-                    
+
                     if(!empty($_GET['search'])) {
                         $search = ($_GET['search']);
                         $sql = "SELECT * FROM {TABLE_NAME}
                             WHERE CONCAT ({INDEX_CONCAT_SEARCH_FIELDS})
                             LIKE '%$search%'
-                            ORDER BY $order $sort 
+                            ORDER BY $order $sort
                             LIMIT $offset, $no_of_records_per_page";
                     }
                     else {
@@ -222,9 +222,9 @@ if(isset($_GET["{TABLE_ID}"]) && !empty(trim($_GET["{TABLE_ID}"]))){
                     <div class="page-header">
                         <h1>View Record</h1>
                     </div>
-                        
-                     {RECORDS_READ_FORM}                    
-                    
+
+                     {RECORDS_READ_FORM}
+
                     <p><a href="{TABLE_NAME}-index.php" class="btn btn-primary">Back</a></p>
                 </div>
             </div>
@@ -327,7 +327,7 @@ require_once "config.php";
 
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-/*    
+/*
     // Validate input
     $input_address = trim($_POST["address"]);
     if(empty($input_address)){
@@ -354,8 +354,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
           error_log($e->getMessage());
           exit('Something weird happened'); //something a user can understand
         }
-        $stmt = $pdo->prepare("INSERT INTO {TABLE_NAME} ({CREATE_COLUMN_NAMES}) VALUES ({CREATE_QUESTIONMARK_PARAMS})"); 
-        
+        $stmt = $pdo->prepare("INSERT INTO {TABLE_NAME} ({CREATE_COLUMN_NAMES}) VALUES ({CREATE_QUESTIONMARK_PARAMS})");
+
         if($stmt->execute([ {CREATE_SQL_PARAMS}  ])) {
                 $stmt = null;
                 header("location: {TABLE_NAME}-index.php");
@@ -420,7 +420,7 @@ if(isset($_POST["{COLUMN_ID}"]) && !empty($_POST["{COLUMN_ID}"])){
     // Check input errors before inserting in database
 //    if(empty($name_err) && empty($address_err) && empty($salary_err)){
         // Prepare an update statement
-        
+
         {CREATE_POST_VARIABLES}
 
         $dsn = "mysql:host=$db_server;dbname=$db_name;charset=utf8mb4";
@@ -580,7 +580,7 @@ $startfile = <<<'EOT'
 <body>
 <fieldset>
 <center>
-<legend>Available CRUD pages</legend>
+<legend class="pt-5 pb-2">Available CRUD pages</legend>
 <div class="form-group">
     {TABLE_BUTTONS}
 </div>
