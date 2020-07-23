@@ -28,6 +28,7 @@ $indexfile = <<<'EOT'
                     <div class="page-header clearfix">
                         <h2 class="float-left">{TABLE_DISPLAY} Details</h2>
                         <a href="{TABLE_NAME}-create.php" class="btn btn-success float-right">Add New Record</a>
+                        <a href="{TABLE_NAME}-index.php" class="btn btn-info float-right mr-2">Reset Search</a>
                         <a href="index.php" class="btn btn-secondary float-right mr-2">Back</a>
                     </div>
 
@@ -50,7 +51,7 @@ $indexfile = <<<'EOT'
                     } else {
                         $pageno = 1;
                     }
-                    $no_of_records_per_page = 25;
+                    $no_of_records_per_page = 10;
                     $offset = ($pageno-1) * $no_of_records_per_page;
 
                     $total_pages_sql = "SELECT COUNT(*) FROM {TABLE_NAME}";
